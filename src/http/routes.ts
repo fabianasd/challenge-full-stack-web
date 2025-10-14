@@ -1,7 +1,7 @@
-import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
+import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 
 export async function usersRoutes(app: FastifyInstance) {
-    app.post('/users', (request: FastifyRequest, reply: FastifyReply) => {
-
-    })
+  app.post('/users', (request: FastifyRequest, reply: FastifyReply) => {
+    console.log('lint', request, reply);
+  });
 }
