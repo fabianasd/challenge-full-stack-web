@@ -2,8 +2,35 @@
     "extends": [
         "@rocketseat/eslint-config/node"
     ],
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+        "@typescript-eslint",
+        "prettier"
+    ],
     "rules": {
         "camelcase": "off",
-        "no-useless-construtor": "off"
+        "no-useless-construtor": "off",
+        "semi": "off",
+        "@typescript-eslint/semi": [
+            "error",
+            "always"
+        ],
+        "prettier/prettier": [
+            "error",
+            {
+                "semi": true,
+                "singleQuote": true,
+                "jsxSingleQuote": true
+            }
+        ],
+        "quotes": "off",
+        "@typescript-eslint/quotes": [
+            "error",
+            "single",
+            {
+                "avoidEscape": true,
+                "allowTemplateLiterals": true
+            }
+        ]
     }
 }
