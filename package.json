@@ -5,32 +5,32 @@
     "type": "module",
     "main": "index.js",
     "scripts": {
-      "start:dev": "tsx watch src/server.ts",
-      "start": "node build/server.js",
-      "build": "tsup src --out-dir build"
+        "start:dev": "tsx watch src/server.ts",
+        "start": "node build/server.js",
+        "build": "tsup src --out-dir build"
     },
     "repository": {
-      "type": "git",
-      "url": "git+https://github.com/fabianasd/challenge-full-stack-web.git"
+        "type": "git",
+        "url": "git+https://github.com/fabianasd/challenge-full-stack-web.git"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "bugs": {
-      "url": "https://github.com/fabianasd/challenge-full-stack-web/issues"
+        "url": "https://github.com/fabianasd/challenge-full-stack-web/issues"
     },
     "homepage": "https://github.com/fabianasd/challenge-full-stack-web#readme",
     "devDependencies": {
-      "@types/node": "24.5.2",
-      "eslint": "8.57.1",
-      "tsx": "4.20.5",
-      "typescript": "5.9.2",
-      "tsup": "8.5.0"
+        "@rocketseat/eslint-config": "^2.2.2",
+        "@types/node": "24.5.2",
+        "eslint": "^8.57.1",
+        "tsup": "8.5.0",
+        "tsx": "4.20.5",
+        "typescript": "5.9.2"
     },
     "dependencies": {
-      "dotenv": "17.2.2",
-      "fastify": "5.6.0",
-       "zod": "4.1.9"
+        "dotenv": "17.2.2",
+        "fastify": "5.6.0",
+        "zod": "4.1.9"
     }
-  }
-  
+}
