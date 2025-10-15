@@ -1,5 +1,5 @@
 import type { Prisma, Person, Student } from "@prisma/client";
-import type { StudentWithPerson, UsersRepository } from "../users-repository.js";
+import type { StudentWithPerson, UsersRepository } from "../users-repository";
 
 export class InMemoryUsersRepository implements UsersRepository {
     public items: Person[] = []
@@ -64,7 +64,7 @@ export class InMemoryUsersRepository implements UsersRepository {
         return { ...student, person }
     }
 
-     async updateEditable(personId: bigint, data: { name?: string; email?: string }): Promise<Person> {
+    async updateEditable(personId: bigint, data: { name?: string; email?: string }): Promise<Person> {
         const idx = this.items.findIndex(u => u.personId === personId)
         if (idx < 0) throw new Error('NOT_FOUND')
 
@@ -81,5 +81,20 @@ export class InMemoryUsersRepository implements UsersRepository {
         }
         this.items[idx] = updated
         return updated
+    }
+
+    async deleteByRA(ra: string): Promise<void> {
+        const studentIdx = this.ra.findIndex((item) => item.ra === ra)
+        if (studentIdx < 0) {
+            throw new Error('NOT_FOUND')
+        }
+
+        const student = this.ra[studentIdx]!
+        this.ra.splice(studentIdx, 1)
+
+        const personIdx = this.items.findIndex((item) => item.personId === student.personId)
+        if (personIdx >= 0) {
+            this.items.splice(personIdx, 1)
+        }
     }
 }
