@@ -1,32 +1,60 @@
+import { Prisma } from "@prisma/client"
+import type { Person } from "@prisma/client"
 import { prisma } from "../../lib/prisma"
-import { Prisma, Person } from "@prisma/client"
 import type { UsersRepository } from "../users-repository"
 
 export class PrismaUsersRepository implements UsersRepository {
-    async create(data: Prisma.PersonCreateInput) {
-        const person = await prisma.person.create({ data })
-        return person
+  async create(data: Prisma.PersonCreateInput) {
+    return prisma.person.create({ data })
+  }
+
+  async findByEmail(email: string) {
+    return prisma.person.findUnique({ where: { email } })
+  }
+
+  async findByCPF(cpf: string) {
+    return prisma.person.findUnique({ where: { document: cpf } })
+  }
+
+  async listAll(): Promise<Person[]> {
+    return prisma.person.findMany({ orderBy: { personId: 'asc' } })
+  }
+
+  async findByRA(ra: string) {
+    return prisma.student.findFirst({
+      where: { ra },
+      include: { person: true },
+    })
+  }
+
+  async updateEditable(personId: bigint, data: { name?: string; email?: string }): Promise<Person> {
+    const updateData: Prisma.PersonUpdateInput = {}
+    if (data.name !== undefined) {
+      updateData.fullName = data.name
+    }
+    if (data.email !== undefined) {
+      updateData.email = data.email
     }
 
-    async findByEmail(email: string) {
-        const person = await prisma.person.findUnique({ where: { email } })
-        return person;
+    try {
+      return await prisma.person.update({
+        where: { personId },
+        data: updateData,
+      })
+    } catch (err: unknown) {
+      if (err instanceof Prisma.PrismaClientKnownRequestError) {
+        if (err.code === 'P2025') {
+          throw new Error('NOT_FOUND')
+        }
+        if (err.code === 'P2002') {
+          const target = err.meta?.target
+          const targets = Array.isArray(target) ? target : target ? [target] : []
+          if (targets.includes('email') || targets.includes('person_email_key')) {
+            throw new Error('EMAIL_TAKEN')
+          }
+        }
+      }
+      throw err
     }
-
-    async findByCPF(cpf: string) {
-        const person = await prisma.person.findUnique({ where: { document: cpf } })
-        return person
-    }
-
-    async listAll(): Promise<Person[]> {
-        return prisma.person.findMany({ orderBy: { personId: 'asc' } })
-    }
-
-    async findByRA(ra: string) {
-        const user = await prisma.student.findFirst({
-            where: { ra },
-            include: { person: true },
-        })
-        return user
-    }
+  }
 }

@@ -63,4 +63,23 @@ export class InMemoryUsersRepository implements UsersRepository {
 
         return { ...student, person }
     }
+
+     async updateEditable(personId: bigint, data: { name?: string; email?: string }): Promise<Person> {
+        const idx = this.items.findIndex(u => u.personId === personId)
+        if (idx < 0) throw new Error('NOT_FOUND')
+
+        const current = this.items[idx]!
+        if (data.email && data.email !== current.email) {
+            const dup = this.items.some(u => u.email === data.email && u.personId !== personId)
+            if (dup) throw new Error('EMAIL_TAKEN')
+        }
+
+        const updated: Person = {
+            ...current,
+            fullName: data.name ?? current.fullName,
+            email: data.email ?? current.email,
+        }
+        this.items[idx] = updated
+        return updated
+    }
 }
