@@ -4,57 +4,77 @@ import { prisma } from "../../lib/prisma"
 import type { UsersRepository } from "../users-repository"
 
 export class PrismaUsersRepository implements UsersRepository {
-  async create(data: Prisma.PersonCreateInput) {
-    return prisma.person.create({ data })
-  }
-
-  async findByEmail(email: string) {
-    return prisma.person.findUnique({ where: { email } })
-  }
-
-  async findByCPF(cpf: string) {
-    return prisma.person.findUnique({ where: { document: cpf } })
-  }
-
-  async listAll(): Promise<Person[]> {
-    return prisma.person.findMany({ orderBy: { personId: 'asc' } })
-  }
-
-  async findByRA(ra: string) {
-    return prisma.student.findFirst({
-      where: { ra },
-      include: { person: true },
-    })
-  }
-
-  async updateEditable(personId: bigint, data: { name?: string; email?: string }): Promise<Person> {
-    const updateData: Prisma.PersonUpdateInput = {}
-    if (data.name !== undefined) {
-      updateData.fullName = data.name
-    }
-    if (data.email !== undefined) {
-      updateData.email = data.email
+    async create(data: Prisma.PersonCreateInput) {
+        return prisma.person.create({ data })
     }
 
-    try {
-      return await prisma.person.update({
-        where: { personId },
-        data: updateData,
-      })
-    } catch (err: unknown) {
-      if (err instanceof Prisma.PrismaClientKnownRequestError) {
-        if (err.code === 'P2025') {
-          throw new Error('NOT_FOUND')
+    async findByEmail(email: string) {
+        return prisma.person.findUnique({ where: { email } })
+    }
+
+    async findByCPF(cpf: string) {
+        return prisma.person.findUnique({ where: { document: cpf } })
+    }
+
+    async listAll(): Promise<Person[]> {
+        return prisma.person.findMany({ orderBy: { personId: 'asc' } })
+    }
+
+    async findByRA(ra: string) {
+        return prisma.student.findFirst({
+            where: { ra },
+            include: { person: true },
+        })
+    }
+
+    async updateEditable(personId: bigint, data: { name?: string; email?: string }): Promise<Person> {
+        const updateData: Prisma.PersonUpdateInput = {}
+        if (data.name !== undefined) {
+            updateData.fullName = data.name
         }
-        if (err.code === 'P2002') {
-          const target = err.meta?.target
-          const targets = Array.isArray(target) ? target : target ? [target] : []
-          if (targets.includes('email') || targets.includes('person_email_key')) {
-            throw new Error('EMAIL_TAKEN')
-          }
+        if (data.email !== undefined) {
+            updateData.email = data.email
         }
-      }
-      throw err
+
+        try {
+            return await prisma.person.update({
+                where: { personId },
+                data: updateData,
+            })
+        } catch (err: unknown) {
+            if (err instanceof Prisma.PrismaClientKnownRequestError) {
+                if (err.code === 'P2025') {
+                    throw new Error('NOT_FOUND')
+                }
+                if (err.code === 'P2002') {
+                    const target = err.meta?.target
+                    const targets = Array.isArray(target) ? target : target ? [target] : []
+                    if (targets.includes('email') || targets.includes('person_email_key')) {
+                        throw new Error('EMAIL_TAKEN')
+                    }
+                }
+            }
+            throw err
+        }
     }
-  }
+
+    async deleteByRA(ra: string): Promise<void> {
+        const student = await prisma.student.findFirst({
+            where: { ra },
+            select: { personId: true },
+        })
+
+        if (!student) {
+            throw new Error('NOT_FOUND')
+        }
+
+        try {
+            await prisma.person.delete({ where: { personId: student.personId } })
+        } catch (err: unknown) {
+            if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2025') {
+                throw new Error('NOT_FOUND')
+            }
+            throw err
+        }
+    }
 }
