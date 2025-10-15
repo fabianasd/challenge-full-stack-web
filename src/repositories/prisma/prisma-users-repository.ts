@@ -21,4 +21,12 @@ export class PrismaUsersRepository implements UsersRepository {
     async listAll(): Promise<Person[]> {
         return prisma.person.findMany({ orderBy: { personId: 'asc' } })
     }
+
+    async findByRA(ra: string) {
+        const user = await prisma.student.findFirst({
+            where: { ra },
+            include: { person: true },
+        })
+        return user
+    }
 }

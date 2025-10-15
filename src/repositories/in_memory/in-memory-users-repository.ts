@@ -1,8 +1,9 @@
-import type { Prisma, Person } from "@prisma/client";
-import type { UsersRepository } from "../users-repository.js";
+import type { Prisma, Person, Student } from "@prisma/client";
+import type { StudentWithPerson, UsersRepository } from "../users-repository.js";
 
 export class InMemoryUsersRepository implements UsersRepository {
     public items: Person[] = []
+    public ra: Student[] = []
     private personIdSeq = 1n
 
     async create(data: Prisma.PersonCreateInput) {
@@ -46,5 +47,20 @@ export class InMemoryUsersRepository implements UsersRepository {
             return a.personId > b.personId ? 1 : -1
         })
     }
-}
 
+    async findByRA(ra: string): Promise<StudentWithPerson | null> {
+        const student = this.ra.find((item) => item.ra === ra)
+
+        if (!student) {
+            return null
+        }
+
+        const person = this.items.find((item) => item.personId === student.personId)
+
+        if (!person) {
+            return null
+        }
+
+        return { ...student, person }
+    }
+}
