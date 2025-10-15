@@ -1,5 +1,5 @@
 import { prisma } from "../../lib/prisma"
-import { Prisma } from "@prisma/client"
+import { Prisma, Person } from "@prisma/client"
 import type { UsersRepository } from "../users-repository"
 
 export class PrismaUsersRepository implements UsersRepository {
@@ -10,11 +10,15 @@ export class PrismaUsersRepository implements UsersRepository {
 
     async findByEmail(email: string) {
         const person = await prisma.person.findUnique({ where: { email } })
-        return person
+        return person;
     }
 
     async findByCPF(cpf: string) {
         const person = await prisma.person.findUnique({ where: { document: cpf } })
         return person
+    }
+
+    async listAll(): Promise<Person[]> {
+        return prisma.person.findMany({ orderBy: { personId: 'asc' } })
     }
 }
