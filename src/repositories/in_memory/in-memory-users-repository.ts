@@ -37,4 +37,14 @@ export class InMemoryUsersRepository implements UsersRepository {
 
         return user
     }
+
+    async listAll(): Promise<Person[]> {
+        return this.items.slice().sort((a, b) => {
+            if (a.personId === b.personId) {
+                return 0
+            }
+            return a.personId > b.personId ? 1 : -1
+        })
+    }
 }
+
