@@ -8,4 +8,5 @@ export interface UsersRepository {
     findByCPF(cpf: string): Promise<Person | null>
     listAll(): Promise<Person[]>
     findByRA(ra: string): Promise<StudentWithPerson | null>
+    updateEditable(personId: bigint, data: { name?: string; email?: string }): Promise<Person>
 }
