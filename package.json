@@ -1,7 +1,7 @@
 {
-    "name": "03-api-solid",
+    "name": "challenge",
     "version": "1.0.0",
-    "description": "GymPass style app.",
+    "description": "challenge",
     "type": "module",
     "main": "index.js",
     "scripts": {
@@ -26,11 +26,14 @@
         "@rocketseat/eslint-config": "^2.2.2",
         "@types/node": "24.5.2",
         "eslint": "^8.57.1",
+        "prisma": "^6.17.1",
         "tsup": "8.5.0",
         "tsx": "4.20.5",
         "typescript": "5.9.2"
     },
     "dependencies": {
+        "@prisma/client": "^6.17.1",
+        "cpf-cnpj-validator": "^1.0.3",
         "dotenv": "17.2.2",
         "fastify": "5.6.0",
         "zod": "4.1.9"

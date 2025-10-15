@@ -1,7 +1,6 @@
-import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import type { FastifyInstance } from 'fastify';
+import { register } from "./controllers/register.js"
 
 export async function usersRoutes(app: FastifyInstance) {
-  app.post('/users', (request: FastifyRequest, reply: FastifyReply) => {
-    console.log('lint', request, reply);
-  });
+  app.post('/users', register)
 }
