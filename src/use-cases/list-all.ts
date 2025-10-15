@@ -1,4 +1,4 @@
-import type { UsersRepository } from '../repositories/users-repository.js'
+import type { UsersRepository } from '../repositories/users-repository'
 import type { Person } from '@prisma/client'
 
 type ListUsersResponse = { users: Person[] }
