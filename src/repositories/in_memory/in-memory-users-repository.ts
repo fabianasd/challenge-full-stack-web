@@ -1,7 +1,8 @@
 import type { Prisma, Person, Student } from "@prisma/client";
-import type { StudentWithPerson, UsersRepository } from "../users-repository.js";
+import type { PersonWithStudent, StudentWithPerson, UsersRepository } from "../users-repository.js";
 
 export class InMemoryUsersRepository implements UsersRepository {
+    public personWithStudents: PersonWithStudent[] = []
     public items: Person[] = []
     public ra: Student[] = []
     private personIdSeq = 1n
@@ -15,6 +16,15 @@ export class InMemoryUsersRepository implements UsersRepository {
         }
 
         this.items.push(user)
+
+        const studentRelation = data.student
+        if (studentRelation && 'create' in studentRelation && studentRelation.create) {
+            const createdStudent = studentRelation.create
+            this.ra.push({
+                personId: user.personId,
+                ra: createdStudent.ra,
+            })
+        }
 
         return user
     }
@@ -39,8 +49,8 @@ export class InMemoryUsersRepository implements UsersRepository {
         return user
     }
 
-    async listAll(): Promise<Person[]> {
-        return this.items.slice().sort((a, b) => {
+    async listAll(): Promise<PersonWithStudent[]> {
+        return this.personWithStudents.slice().sort((a, b) => {
             if (a.personId === b.personId) {
                 return 0
             }
