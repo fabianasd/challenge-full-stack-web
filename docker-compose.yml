@@ -1,10 +1,19 @@
+
+networks:
+  shared-services:
+    external: true
+    driver: bridge 
+
 services:
-  db:
+  postgres-db:
+    container_name: postgres-db
     image: postgres:16-alpine
     environment:
       POSTGRES_USER: docker
       POSTGRES_PASSWORD: docker
       POSTGRES_DB: app
+    networks:
+      - shared-services
     volumes:
       - db_data:/var/lib/postgresql/data
     healthcheck:
@@ -18,17 +27,20 @@ services:
   api:
     build:
       context: .
-      dockerfile: Dockerfile
-    depends_on:
-      db:
-        condition: service_healthy
-    volumes:
-      - ".:/app"
+      target: dev
     environment:
-      DATABASE_URL: "postgresql://docker:docker@db:5432/app?schema=public"
-      NODE_ENV: "production"
-      PORT: "3333"
+      - NODE_ENV=dev
+      - DEBUG=${DEBUG}
+      - WATCH_FILES=${WATCH_FILES}
+      - DATABASE_URL=postgresql://docker:docker@postgres-db:5432/app?schema=public
+    volumes:
+      - ".:/application"
+      # - "~/.aws/credentials:/root/.aws/credentials"
+      # - "~/.aws/config:/root/.aws/config"
+    networks:
+      - shared-services
     ports:
+      - "9229:9229"
       - "3333:3333"
 
 volumes:

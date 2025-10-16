@@ -1,26 +1,14 @@
-FROM node:22-alpine AS builder
-WORKDIR /app
+FROM node:22-alpine AS dev
 
-COPY package*.json ./
-COPY prisma ./prisma
+RUN apk update
+RUN apk add openssl
+RUN mkdir -p /usr/local/share/ca-certificates
 
-RUN npm install
-RUN npx prisma generate
+ENV PATH="/application/node_modules/.bin:${PATH}"
+ENV NODE_EXTRA_CA_CERTS="/etc/ssl/certs/ca-certificates.crt"
+RUN apk add git ca-certificates bash sudo make build-base python3 libcap openssh
+RUN update-ca-certificates
+RUN echo "node ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/node && chmod 0440 /etc/sudoers.d/node
+RUN setcap cap_net_bind_service=+ep /usr/local/bin/node
 
-COPY tsconfig*.json ./
-COPY src ./src
-RUN npm run build  # gera dist/
-
-FROM node:22-alpine AS runner
-WORKDIR /app
-ENV NODE_ENV=production
-
-COPY package*.json ./
-RUN npm install --omit=dev
-
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/dist ./dist
-
-EXPOSE 3333
-CMD sh -c "npm run start:dev"
+CMD cd "/application" && if [ "$WATCH_FILES" == "1" ]; then NODE_OPTIONS=--inspect=0.0.0.0:9229 npm run start:dev; else node "dist/app.js"; fi
