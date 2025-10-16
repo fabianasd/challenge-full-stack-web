@@ -5,5 +5,5 @@ export enum LogType {
 };
 
 export interface DefaultGateway {
-    addLog(logType: LogType, message: string, details: any): void;
+    addLog(logType: LogType, message: string, details?: any): void;
 }

@@ -1,9 +1,8 @@
-import type { Person } from '@prisma/client'
 import { ListStudentsGateway } from './list-students.gateway'
 import { ListStudentOutput } from './list-students.dto';
 import { LogType } from '../common/default.gateway';
 import { StudentError } from '../../shared/errors/students.error';
-import { ERROR_MESSAGES } from '../../shared/errors/error-messages';
+import { ERROR_MESSAGES, ERROR_TYPE } from '../../shared/errors/error-messages';
 
 export class ListStudentsUseCase {
   constructor(private listStudentsGateway: ListStudentsGateway) {}
@@ -19,7 +18,7 @@ export class ListStudentsUseCase {
       this.listStudentsGateway.addLog(LogType.Error, 'Error when listing students', { err })
 
       return {
-        error: new StudentError(ERROR_MESSAGES.ERROR_LISTING_STUDENT, 500)
+        error: new StudentError(ERROR_MESSAGES.ERROR_LISTING_STUDENT, ERROR_TYPE.LIST_STUDENT_ERROR, 500)
       }
     }
   }
