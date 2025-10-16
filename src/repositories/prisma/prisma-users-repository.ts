@@ -1,33 +1,37 @@
 import { Prisma } from "@prisma/client"
 import type { Person } from "@prisma/client"
 import { prisma } from "../../lib/prisma"
-import type { UsersRepository } from "../users-repository"
+import type { PersonWithStudent, UsersRepository } from "../users-repository"
 
 export class PrismaUsersRepository implements UsersRepository {
-    async create(data: Prisma.PersonCreateInput) {
-        return prisma.person.create({ data })
-    }
+  async create(data: Prisma.PersonCreateInput) {
+    return prisma.person.create({ data })
+  }
 
-    async findByEmail(email: string) {
-        return prisma.person.findUnique({ where: { email } })
-    }
+  async findByEmail(email: string) {
+    return prisma.person.findUnique({ where: { email } })
+  }
 
-    async findByCPF(cpf: string) {
-        return prisma.person.findUnique({ where: { document: cpf } })
-    }
+  async findByCPF(cpf: string) {
+    return prisma.person.findUnique({ where: { document: cpf } })
+  }
 
-    async listAll(): Promise<Person[]> {
-        return prisma.person.findMany({ orderBy: { personId: 'asc' } })
-    }
+  async listAll(): Promise<PersonWithStudent[]> {
+    const users = await prisma.person.findMany({
+        orderBy: { personId: 'asc' },
+        include: { student: true }
+    })
+    return users;
+  }
 
-    async findByRA(ra: string) {
-        return prisma.student.findFirst({
-            where: { ra },
-            include: { person: true },
-        })
-    }
+  async findByRA(ra: string) {
+    return prisma.student.findFirst({
+      where: { ra },
+      include: { person: true },
+    })
+  }
 
-    async updateEditable(personId: bigint, data: { name?: string; email?: string }): Promise<Person> {
+  async updateEditable(personId: bigint, data: { name?: string; email?: string }): Promise<Person> {
         const updateData: Prisma.PersonUpdateInput = {}
         if (data.name !== undefined) {
             updateData.fullName = data.name

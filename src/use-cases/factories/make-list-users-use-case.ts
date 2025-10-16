@@ -1,7 +1,10 @@
+import { ListStudentsGateway } from "../../gateway/students/list-students.gateway"
 import { PrismaUsersRepository } from "../../repositories/prisma/prisma-users-repository"
-import { ListUsersUseCase } from '../list-all'
+import { ListStudentsUseCase } from '../list-students/list-students.use-case'
 
 export function makeListUsersUseCase() {
-  const repo = new PrismaUsersRepository()
-  return new ListUsersUseCase(repo)
+  const prismaUsersRepository = new PrismaUsersRepository()
+  const gateway = new ListStudentsGateway(prismaUsersRepository)
+  // @ts-ignore
+  return new ListStudentsUseCase(gateway);
 }
