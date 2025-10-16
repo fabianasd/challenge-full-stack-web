@@ -10,4 +10,5 @@ export interface UsersRepository {
     listAll(): Promise<PersonWithStudent[]>
     findByRA(ra: string): Promise<StudentWithPerson | null>
     updateEditable(personId: bigint, data: { name?: string; email?: string }): Promise<Person>
+    deleteByRA(ra: string): Promise<void>
 }

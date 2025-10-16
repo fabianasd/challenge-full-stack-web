@@ -32,33 +32,53 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async updateEditable(personId: bigint, data: { name?: string; email?: string }): Promise<Person> {
-    const updateData: Prisma.PersonUpdateInput = {}
-    if (data.name !== undefined) {
-      updateData.fullName = data.name
-    }
-    if (data.email !== undefined) {
-      updateData.email = data.email
+        const updateData: Prisma.PersonUpdateInput = {}
+        if (data.name !== undefined) {
+            updateData.fullName = data.name
+        }
+        if (data.email !== undefined) {
+            updateData.email = data.email
+        }
+
+        try {
+            return await prisma.person.update({
+                where: { personId },
+                data: updateData,
+            })
+        } catch (err: unknown) {
+            if (err instanceof Prisma.PrismaClientKnownRequestError) {
+                if (err.code === 'P2025') {
+                    throw new Error('NOT_FOUND')
+                }
+                if (err.code === 'P2002') {
+                    const target = err.meta?.target
+                    const targets = Array.isArray(target) ? target : target ? [target] : []
+                    if (targets.includes('email') || targets.includes('person_email_key')) {
+                        throw new Error('EMAIL_TAKEN')
+                    }
+                }
+            }
+            throw err
+        }
     }
 
-    try {
-      return await prisma.person.update({
-        where: { personId },
-        data: updateData,
-      })
-    } catch (err: unknown) {
-      if (err instanceof Prisma.PrismaClientKnownRequestError) {
-        if (err.code === 'P2025') {
-          throw new Error('NOT_FOUND')
+    async deleteByRA(ra: string): Promise<void> {
+        const student = await prisma.student.findFirst({
+            where: { ra },
+            select: { personId: true },
+        })
+
+        if (!student) {
+            throw new Error('NOT_FOUND')
         }
-        if (err.code === 'P2002') {
-          const target = err.meta?.target
-          const targets = Array.isArray(target) ? target : target ? [target] : []
-          if (targets.includes('email') || targets.includes('person_email_key')) {
-            throw new Error('EMAIL_TAKEN')
-          }
+
+        try {
+            await prisma.person.delete({ where: { personId: student.personId } })
+        } catch (err: unknown) {
+            if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2025') {
+                throw new Error('NOT_FOUND')
+            }
+            throw err
         }
-      }
-      throw err
     }
-  }
 }
