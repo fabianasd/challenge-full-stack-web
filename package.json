@@ -32,6 +32,7 @@
         "typescript": "5.9.2"
     },
     "dependencies": {
+        "@fastify/cors": "^10.0.0",
         "@prisma/client": "^6.17.1",
         "cpf-cnpj-validator": "^1.0.3",
         "dotenv": "17.2.2",

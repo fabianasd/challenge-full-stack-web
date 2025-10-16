@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify';
-import { register } from "./controllers/register";
+import { register } from "./controllers/register-student";
 import { listStudents } from './controllers/list-students';
 import { getUserByRA } from './controllers/get-by-ra';
 import { updateUser } from './controllers/update';

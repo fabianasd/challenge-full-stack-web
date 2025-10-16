@@ -2,34 +2,62 @@ import { Prisma } from "@prisma/client"
 import type { Person } from "@prisma/client"
 import { prisma } from "../../lib/prisma"
 import type { PersonWithStudent, UsersRepository } from "../users-repository"
+import { StudentEntity } from "../../entities/student"
 
-export class PrismaUsersRepository implements UsersRepository {
-  async create(data: Prisma.PersonCreateInput) {
-    return prisma.person.create({ data })
-  }
+export class PrismaPersonRepository implements UsersRepository {
+    async create(studentEntity: StudentEntity): Promise<StudentEntity | null> {
+        const data = {
+            fullName: studentEntity.name,
+            email: studentEntity.email,
+            document: studentEntity.document,
+            student: {
+                create: {
+                    ra: studentEntity.ra,
+                },
+            },
+        }
 
-  async findByEmail(email: string) {
-    return prisma.person.findUnique({ where: { email } })
-  }
+        const student: PersonWithStudent = await prisma.person.create({ data, include: { student: true }, })
 
-  async findByCPF(cpf: string) {
-    return prisma.person.findUnique({ where: { document: cpf } })
-  }
+        return this.toEntity(student);
+    }
 
-  async listAll(): Promise<PersonWithStudent[]> {
-    const users = await prisma.person.findMany({
-        orderBy: { personId: 'asc' },
-        include: { student: true }
-    })
-    return users;
-  }
+    async findByEmail(email: string): Promise<StudentEntity | null> {
+        const person = await prisma.person.findUnique({
+            where: { email },
+            include: { student: true }
+        });
 
-  async findByRA(ra: string) {
-    return prisma.student.findFirst({
-      where: { ra },
-      include: { person: true },
-    })
-  }
+        if (!person) return null
+
+        return this.toEntity(person)
+    }
+
+    async findByCPF(cpf: string) {
+        const person = await prisma.person.findUnique({
+            where: { document: cpf },
+            include: { student: true },
+        })
+
+        if (!person) return null
+
+        return this.toEntity(person)
+    }
+
+    async listAll(): Promise<PersonWithStudent[]> {
+        const users = await prisma.person.findMany({
+            orderBy: { personId: 'asc' },
+            include: { student: true }
+        })
+        return users;
+    }
+
+    async findByRA(ra: string) {
+        return prisma.student.findFirst({
+            where: { ra },
+            include: { person: true },
+        })
+    }
 
   async updateEditable(personId: bigint, data: { name?: string; email?: string }): Promise<Person> {
         const updateData: Prisma.PersonUpdateInput = {}
@@ -80,5 +108,13 @@ export class PrismaUsersRepository implements UsersRepository {
             }
             throw err
         }
+    }
+
+    toEntity(user: PersonWithStudent): StudentEntity | null {
+        if (!user) {
+            return null
+        }
+
+        return new StudentEntity(user.fullName, user.email, user.document, user.student?.ra || "");
     }
 }
