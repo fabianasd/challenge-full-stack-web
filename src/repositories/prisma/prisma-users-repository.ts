@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client"
 import type { Person } from "@prisma/client"
 import { prisma } from "../../lib/prisma"
-import type { UsersRepository } from "../users-repository"
+import type { PersonWithStudent, UsersRepository } from "../users-repository"
 
 export class PrismaUsersRepository implements UsersRepository {
   async create(data: Prisma.PersonCreateInput) {
@@ -16,8 +16,12 @@ export class PrismaUsersRepository implements UsersRepository {
     return prisma.person.findUnique({ where: { document: cpf } })
   }
 
-  async listAll(): Promise<Person[]> {
-    return prisma.person.findMany({ orderBy: { personId: 'asc' } })
+  async listAll(): Promise<PersonWithStudent[]> {
+    const users = await prisma.person.findMany({
+        orderBy: { personId: 'asc' },
+        include: { student: true }
+    })
+    return users;
   }
 
   async findByRA(ra: string) {
