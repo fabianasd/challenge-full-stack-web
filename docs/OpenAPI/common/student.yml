@@ -1,0 +1,21 @@
+type: object
+required: [name, email, cpf, ra]
+properties:
+  name:
+    type: string
+    maximum: 255
+    example: "João da Silva Mota"
+    description: Nome completo do Aluno
+  email:
+    type: string
+    maximum: 255
+    example: meu_email@gmail.com
+    description: E-mail fornecido pelo aluno no momento do cadastro
+  cpf:
+    type: string
+    maximum: 11
+    example: 12345678901
+    description: Documento CPF do aluno
+  ra:
+    type: number
+    description: Registro acadêmico do Aluno

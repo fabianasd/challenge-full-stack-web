@@ -1,0 +1,84 @@
+tags:
+  - Students
+summary: Listar Alunos
+description: >-
+  Neste endpoint listar todos os alunos cadastrados.
+
+  Algumas informações são fornecidas como Nome, Email, CPF e Registro Acadêmico.
+operationId: listarAlunos
+responses:
+
+  "200":
+    description: "200"
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [data]
+          properties:
+            data:
+              type: array
+              items:
+                $ref: "./../common/student.yml"
+        examples:
+          "200":
+            value:
+              data: 
+                - name: "João da Silva "
+                  email: "joao@email.com"
+                  cpf: "02434537014"
+                  ra: "123456789"
+
+  "409":
+    description: Internal Server Error
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [error]
+          properties:
+            error:
+              type: object
+              required: [type, message]
+              properties:
+                type:
+                  type: string
+                  example: "student_already_registered"
+                  description: Aluno já registrado
+                message:
+                  type: string
+                  example: Provided e-mail is already being used
+                  description: E-mail já registrado na base de Alunos
+        examples:
+          "409":
+            value:
+              error:
+                type: "student_already_registered"
+                message: "Provided e-mail is already being used"
+
+  "500":
+    description: Internal Server Error
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [error]
+          properties:
+            error:
+              type: object
+              required: [type, message]
+              properties:
+                type:
+                  type: string
+                  example: internal_server_error
+                  description: Erro interno do servidor
+                message:
+                  type: string
+                  example: Internal server error
+                  description: Erro interno no servidor
+        examples:
+          "500":
+            value:
+              error:
+                type: internal_server_error
+                message: Internal server error

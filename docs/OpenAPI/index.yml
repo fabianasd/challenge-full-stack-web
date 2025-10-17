@@ -1,0 +1,25 @@
+openapi: 3.0.3
+info:
+  title: Gestão de Alunos
+  version: 1.0.0
+  contact:
+    name: Fabiana
+    email: fabypetrovick@gmail.com
+    url: https://amais.fabiana.petrovick.work
+  description: Documentação para Gestão de Alunos
+
+servers:
+  - url: "https://amais.fabiana.petrovick.work"
+    description: Produção
+
+paths:
+  # Students
+  /students:
+    post:
+      tags:
+        - Students
+      $ref: "./students/register-students.yml"
+    get:
+      tags:
+        - Students
+      $ref: "./students/list-students.yml"
