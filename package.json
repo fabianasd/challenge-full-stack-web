@@ -9,7 +9,8 @@
         "start": "node build/server.js",
         "build": "tsup src --out-dir build",
         "lint": "eslint src --ext .ts,.tsx --max-warnings=0",
-        "lint:fix": "eslint src --ext .ts,.tsx --fix"
+        "lint:fix": "eslint src --ext .ts,.tsx --fix",
+        "swagger-merger": "node_modules/swagger-merger/bin/swagger-merger.js -i docs/OpenAPI/index.yml -o docs/OpenAPI/swagger-api.yml"
     },
     "repository": {
         "type": "git",
@@ -29,7 +30,8 @@
         "prisma": "6.17.1",
         "tsup": "8.5.0",
         "tsx": "4.20.5",
-        "typescript": "5.9.2"
+        "typescript": "5.9.2",
+        "swagger-merger": "^1.5.4"
     },
     "dependencies": {
         "@fastify/cors": "^10.0.0",

@@ -13,8 +13,8 @@ const cpfSchema = z.string()
 
 export async function register(request: FastifyRequest, reply: FastifyReply) {
     const registerBodySchema = z.object({
-        name: z.string(),
-        email: z.string().email(),
+        name: z.string().max(255),
+        email: z.string().max(255).email(),
         cpf: cpfSchema,
         ra: z.string().trim().min(1, 'RA é obrigatório'),
     })

@@ -1,4 +1,10 @@
 # Explicações
+
+## Documentação
+
+Foi desenvolvido utilizando a especificação do OpenAPI a documentação da API utilizando o Swagger, conforme o link abaixo.<br />
+[Link](http://docs-api.amais.fabiana.petrovick.work/) do Swagger com a documentação das APIs.
+
 ## Banco de dados
 Seguindo os princípios de normalização, a modelagem do banco de dados foi o primeiro artefato produzido, adotando a abordagem database-first para o desenvolvimento. 
 

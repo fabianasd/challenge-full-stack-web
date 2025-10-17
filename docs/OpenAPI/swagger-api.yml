@@ -1,0 +1,276 @@
+openapi: 3.0.3
+info:
+  title: Gestão de Alunos
+  version: 1.0.0
+  contact:
+    name: Fabiana
+    email: fabypetrovick@gmail.com
+    url: https://amaisteste.fabiana.petrovick.work
+  description: Documentação para Gestão de Alunos
+servers:
+  - url: https://amaisteste.fabiana.petrovick.work
+    description: Produção
+paths:
+  /students:
+    post:
+      tags:
+        - Students
+      summary: Registro de Aluno
+      description: >-
+        Neste endpoint é possível que universidade faça o cadastro do aluno.
+
+        Algumas informações são obrigatórias como Nome, Email e Registro
+        Acadêmico.
+      operationId: registrarAluno
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - cpf
+                - ra
+              properties:
+                name:
+                  type: string
+                  maximum: 255
+                  example: João da Silva Mota
+                  description: Nome completo do Aluno
+                email:
+                  type: string
+                  maximum: 255
+                  example: meu_email@gmail.com
+                  description: E-mail fornecido pelo aluno no momento do cadastro
+                cpf:
+                  type: string
+                  maximum: 11
+                  example: 12345678901
+                  description: Documento CPF do aluno
+                ra:
+                  type: number
+                  description: Registro acadêmico do Aluno
+            examples:
+              Registrar Aluno:
+                value:
+                  name: 'João da Silva '
+                  email: joao@email.com
+                  cpf: '02434537014'
+                  ra: '123456789'
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: object
+                    required:
+                      - name
+                      - email
+                      - cpf
+                      - ra
+                    properties:
+                      name:
+                        type: string
+                        maximum: 255
+                        example: João da Silva Mota
+                        description: Nome completo do Aluno
+                      email:
+                        type: string
+                        maximum: 255
+                        example: meu_email@gmail.com
+                        description: E-mail fornecido pelo aluno no momento do cadastro
+                      cpf:
+                        type: string
+                        maximum: 11
+                        example: 12345678901
+                        description: Documento CPF do aluno
+                      ra:
+                        type: number
+                        description: Registro acadêmico do Aluno
+              examples:
+                '200':
+                  value:
+                    data:
+                      name: 'João da Silva '
+                      email: joao@email.com
+                      cpf: '02434537014'
+                      ra: '123456789'
+        '409':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - error
+                properties:
+                  error:
+                    type: object
+                    required:
+                      - type
+                      - message
+                    properties:
+                      type:
+                        type: string
+                        example: student_already_registered
+                        description: Aluno já registrado
+                      message:
+                        type: string
+                        example: Provided e-mail is already being used
+                        description: E-mail já registrado na base de Alunos
+              examples:
+                '409':
+                  value:
+                    error:
+                      type: student_already_registered
+                      message: Provided e-mail is already being used
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - error
+                properties:
+                  error:
+                    type: object
+                    required:
+                      - type
+                      - message
+                    properties:
+                      type:
+                        type: string
+                        example: internal_server_error
+                        description: Erro interno do servidor
+                      message:
+                        type: string
+                        example: Internal server error
+                        description: Erro interno no servidor
+              examples:
+                '500':
+                  value:
+                    error:
+                      type: internal_server_error
+                      message: Internal server error
+    get:
+      tags:
+        - Students
+      summary: Listar Alunos
+      description: >-
+        Neste endpoint listar todos os alunos cadastrados.
+
+        Algumas informações são fornecidas como Nome, Email, CPF e Registro
+        Acadêmico.
+      operationId: listarAlunos
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - name
+                        - email
+                        - cpf
+                        - ra
+                      properties:
+                        name:
+                          type: string
+                          maximum: 255
+                          example: João da Silva Mota
+                          description: Nome completo do Aluno
+                        email:
+                          type: string
+                          maximum: 255
+                          example: meu_email@gmail.com
+                          description: E-mail fornecido pelo aluno no momento do cadastro
+                        cpf:
+                          type: string
+                          maximum: 11
+                          example: 12345678901
+                          description: Documento CPF do aluno
+                        ra:
+                          type: number
+                          description: Registro acadêmico do Aluno
+              examples:
+                '200':
+                  value:
+                    data:
+                      - name: 'João da Silva '
+                        email: joao@email.com
+                        cpf: '02434537014'
+                        ra: '123456789'
+        '409':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - error
+                properties:
+                  error:
+                    type: object
+                    required:
+                      - type
+                      - message
+                    properties:
+                      type:
+                        type: string
+                        example: student_already_registered
+                        description: Aluno já registrado
+                      message:
+                        type: string
+                        example: Provided e-mail is already being used
+                        description: E-mail já registrado na base de Alunos
+              examples:
+                '409':
+                  value:
+                    error:
+                      type: student_already_registered
+                      message: Provided e-mail is already being used
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - error
+                properties:
+                  error:
+                    type: object
+                    required:
+                      - type
+                      - message
+                    properties:
+                      type:
+                        type: string
+                        example: internal_server_error
+                        description: Erro interno do servidor
+                      message:
+                        type: string
+                        example: Internal server error
+                        description: Erro interno no servidor
+              examples:
+                '500':
+                  value:
+                    error:
+                      type: internal_server_error
+                      message: Internal server error

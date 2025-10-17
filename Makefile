@@ -10,6 +10,9 @@ down:
 setup:
 	docker network create shared-services 2>/dev/null & docker-compose run -w /application api /bin/bash -c "npm install && npx prisma generate && npx prisma migrate dev"
 
+swagger:
+	docker-compose run -w /application api /bin/bash -c "npm install && npm run swagger-merger"
+
 debug: down
 	WATCH_FILES=1 DEBUG=1 docker-compose up -d
 
