@@ -1,19 +1,40 @@
 import fastify from 'fastify'
+import { randomUUID } from 'node:crypto';
+import { baseLogger, createRequestLogger } from './logger';
 import cors from '@fastify/cors'
 import { usersRoutes } from './http/routes'
 import { ZodError } from 'zod'
 import { env } from './env/index'
 
-export const app = fastify()
+export const app = fastify({
+  loggerInstance: baseLogger,
+  genReqId: (req) => req.headers['x-request-id']?.toString() || randomUUID(),
+  requestIdHeader: 'x-request-id',
+  requestIdLogLabel: 'requestId',
+});
 
 app.register(cors, {
   origin: true,
   credentials: true,
 })
 
+app.addHook('onRequest', (req, _reply, done) => {
+  req.customLogger = createRequestLogger({
+    requestId: req.id,
+    path: req.url,
+    method: req.method,
+  });
+
+  req.customLogger.info({ path: req.url, method: req.method }, 'request')
+  
+  done();
+});
+
 app.register(usersRoutes)
 
-app.setErrorHandler((error, _, reply) => {
+app.setErrorHandler((error, request, reply) => {
+  const logger = request?.log ?? baseLogger;
+  logger.error({ err: error }, 'response')
   if (error instanceof ZodError) {
     return reply
       .status(400)
@@ -25,4 +46,6 @@ app.setErrorHandler((error, _, reply) => {
   }
 
   return reply.status(500).send({ message: 'Internal server error.' })
-})
+});
+
+baseLogger.info('System bootstrapped');

@@ -22,7 +22,7 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
     const { name, email, cpf, ra } = registerBodySchema.parse(request.body)
 
     try {
-        const registerUseCase = makeRegisterStudentsUseCase()
+        const registerUseCase = makeRegisterStudentsUseCase(request)
 
         const student = await registerUseCase.execute({
             name,
