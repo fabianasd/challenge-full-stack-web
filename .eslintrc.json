@@ -9,7 +9,8 @@
     ],
     "rules": {
         "camelcase": "off",
-        "no-useless-construtor": "off",
+        "@typescript-eslint/no-explicit-any": 0,
+        "no-useless-constructor": 0,
         "semi": "off",
         "@typescript-eslint/semi": [
             "error",

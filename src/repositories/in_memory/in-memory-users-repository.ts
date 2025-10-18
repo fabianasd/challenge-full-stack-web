@@ -1,110 +1,135 @@
-import type { Prisma, Person, Student } from "@prisma/client";
-import type { PersonWithStudent, StudentWithPerson, UsersRepository } from "../users-repository.js";
+import type { Person } from '@prisma/client';
+import type {
+  PersonWithStudent,
+  StudentWithPerson,
+  UsersRepository,
+} from '../users-repository.js';
+import { StudentEntity } from '../../entities/student.js';
+
+type InMemoryRecord = {
+  personId: bigint;
+  student: StudentEntity;
+};
 
 export class InMemoryUsersRepository implements UsersRepository {
-    public personWithStudents: PersonWithStudent[] = []
-    public items: Person[] = []
-    public ra: Student[] = []
-    private personIdSeq = 1n
+  private records: InMemoryRecord[] = [];
+  private personIdSeq = 1n;
 
-    async create(data: Prisma.PersonCreateInput) {
-        const user: Person = {
-            personId: this.personIdSeq++,
-            fullName: data.fullName,
-            email: data.email,
-            document: data.document,
-        }
+  private toPerson(record: InMemoryRecord): Person {
+    return {
+      personId: record.personId,
+      fullName: record.student.name,
+      email: record.student.email,
+      document: record.student.document,
+    };
+  }
 
-        this.items.push(user)
+  private toPersonWithStudent(record: InMemoryRecord): PersonWithStudent {
+    return {
+      ...this.toPerson(record),
+      student: {
+        personId: record.personId,
+        ra: record.student.ra,
+      },
+    };
+  }
 
-        const studentRelation = data.student
-        if (studentRelation && 'create' in studentRelation && studentRelation.create) {
-            const createdStudent = studentRelation.create
-            this.ra.push({
-                personId: user.personId,
-                ra: createdStudent.ra,
-            })
-        }
+  private toStudentWithPerson(record: InMemoryRecord): StudentWithPerson {
+    return {
+      personId: record.personId,
+      ra: record.student.ra,
+      person: this.toPerson(record),
+    };
+  }
 
-        return user
+  async create(studentEntity: StudentEntity): Promise<StudentEntity | null> {
+    const record: InMemoryRecord = {
+      personId: this.personIdSeq++,
+      student: new StudentEntity(
+        studentEntity.name,
+        studentEntity.email,
+        studentEntity.document,
+        studentEntity.ra,
+      ),
+    };
+
+    this.records.push(record);
+
+    return record.student;
+  }
+
+  async findByEmail(email: string): Promise<StudentEntity | null> {
+    const record = this.records.find((item) => item.student.email === email);
+    return record ? record.student : null;
+  }
+
+  async findByCPF(cpf: string): Promise<StudentEntity | null> {
+    const record = this.records.find((item) => item.student.document === cpf);
+    return record ? record.student : null;
+  }
+
+  async listAll(): Promise<PersonWithStudent[]> {
+    return this.records
+      .map((record) => this.toPersonWithStudent(record))
+      .sort((a, b) => {
+        if (a.personId === b.personId) return 0;
+        return a.personId > b.personId ? 1 : -1;
+      });
+  }
+
+  async findByRA(ra: string): Promise<StudentWithPerson | null> {
+    const record = this.records.find((item) => item.student.ra === ra);
+    return record ? this.toStudentWithPerson(record) : null;
+  }
+
+  async updateEditable(
+    personId: bigint,
+    data: { name?: string; email?: string },
+  ): Promise<Person> {
+    const index = this.records.findIndex((item) => item.personId === personId);
+    if (index < 0) {
+      throw new Error('NOT_FOUND');
     }
 
-    async findByEmail(email: string) {
-        const user = this.items.find((item) => item.email === email)
+    const current = this.records[index]!;
 
-        if (!user) {
-            return null
-        }
+    const isEmailTaken =
+      data.email !== undefined &&
+      data.email !== current.student.email &&
+      this.records.some(
+        (item) =>
+          item.student.email === data.email && item.personId !== personId,
+      );
 
-        return user
+    if (isEmailTaken) {
+      throw new Error('EMAIL_TAKEN');
     }
 
-    async findByCPF(cpf: string) {
-        const user = this.items.find((item) => item.document === cpf)
+    const updatedStudent = new StudentEntity(
+      data.name ?? current.student.name,
+      data.email ?? current.student.email,
+      current.student.document,
+      current.student.ra,
+    );
 
-        if (!user) {
-            return null
-        }
+    const updatedRecord: InMemoryRecord = {
+      personId: current.personId,
+      student: updatedStudent,
+    };
 
-        return user
+    this.records[index] = updatedRecord;
+
+    return this.toPerson(updatedRecord);
+  }
+
+  async deleteByRA(ra: string): Promise<number> {
+    const index = this.records.findIndex((item) => item.student.ra === ra);
+    if (index < 0) {
+      throw new Error('NOT_FOUND');
     }
 
-    async listAll(): Promise<PersonWithStudent[]> {
-        return this.personWithStudents.slice().sort((a, b) => {
-            if (a.personId === b.personId) {
-                return 0
-            }
-            return a.personId > b.personId ? 1 : -1
-        })
-    }
+    this.records.splice(index, 1);
 
-    async findByRA(ra: string): Promise<StudentWithPerson | null> {
-        const student = this.ra.find((item) => item.ra === ra)
-
-        if (!student) {
-            return null
-        }
-
-        const person = this.items.find((item) => item.personId === student.personId)
-
-        if (!person) {
-            return null
-        }
-
-        return { ...student, person }
-    }
-
-    async updateEditable(personId: bigint, data: { name?: string; email?: string }): Promise<Person> {
-        const idx = this.items.findIndex(u => u.personId === personId)
-        if (idx < 0) throw new Error('NOT_FOUND')
-
-        const current = this.items[idx]!
-        if (data.email && data.email !== current.email) {
-            const dup = this.items.some(u => u.email === data.email && u.personId !== personId)
-            if (dup) throw new Error('EMAIL_TAKEN')
-        }
-
-        const updated: Person = {
-            ...current,
-            fullName: data.name ?? current.fullName,
-            email: data.email ?? current.email,
-        }
-        this.items[idx] = updated
-        return updated
-    }
-
-    async deleteByRA(ra: string): Promise<void> {
-        const studentIdx = this.ra.findIndex((item) => item.ra === ra)
-        if (studentIdx < 0) {
-            throw new Error('NOT_FOUND')
-        }
-
-        const student = this.ra[studentIdx]!
-        this.ra.splice(studentIdx, 1)
-
-        const personIdx = this.items.findIndex((item) => item.personId === student.personId)
-        if (personIdx >= 0) {
-            this.items.splice(personIdx, 1)
-        }
-    }
+    return 1;
+  }
 }

@@ -1,10 +1,10 @@
-import fastify from 'fastify'
+import fastify from 'fastify';
 import { randomUUID } from 'node:crypto';
 import { baseLogger, createRequestLogger } from './logger';
-import cors from '@fastify/cors'
-import { usersRoutes } from './http/routes'
-import { ZodError } from 'zod'
-import { env } from './env/index'
+import cors from '@fastify/cors';
+import { usersRoutes } from './http/routes';
+import { ZodError } from 'zod';
+import { env } from './env/index';
 
 export const app = fastify({
   loggerInstance: baseLogger,
@@ -16,7 +16,7 @@ export const app = fastify({
 app.register(cors, {
   origin: true,
   credentials: true,
-})
+});
 
 app.addHook('onRequest', (req, _reply, done) => {
   req.customLogger = createRequestLogger({
@@ -25,27 +25,27 @@ app.addHook('onRequest', (req, _reply, done) => {
     method: req.method,
   });
 
-  req.customLogger.info({ path: req.url, method: req.method }, 'request')
-  
+  req.customLogger.info({ path: req.url, method: req.method }, 'request');
+
   done();
 });
 
-app.register(usersRoutes)
+app.register(usersRoutes);
 
 app.setErrorHandler((error, request, reply) => {
   const logger = request?.log ?? baseLogger;
-  logger.error({ err: error }, 'response')
+  logger.error({ err: error }, 'response');
   if (error instanceof ZodError) {
     return reply
       .status(400)
-      .send({ message: 'Validation error.', issues: error.issues })
+      .send({ message: 'Validation error.', issues: error.issues });
   }
 
   if (env.NODE_ENV !== 'production') {
-    console.error(error)
+    console.error(error);
   }
 
-  return reply.status(500).send({ message: 'Internal server error.' })
+  return reply.status(500).send({ message: 'Internal server error.' });
 });
 
 baseLogger.info('System bootstrapped');
