@@ -8,9 +8,11 @@ export class ListStudentsUseCase {
   constructor(private listStudentsGateway: ListStudentsGateway) {}
 
   async execute(): Promise<ListStudentOutput> {
+    const startDate = Date.now()
     try {
       const students = await this.listStudentsGateway.listAllStudents()
 
+      this.listStudentsGateway.addLog(LogType.Info, 'Student listed sucessfully', {milliseconds: Date.now() - startDate})
       return {
         data: students
       }

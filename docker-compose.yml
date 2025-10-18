@@ -33,6 +33,7 @@ services:
       - DEBUG=${DEBUG}
       - WATCH_FILES=${WATCH_FILES}
       - DATABASE_URL=postgresql://docker:docker@postgres-db:5432/app?schema=public
+      - LOKI_URL=http://192.168.100.250:3100
     volumes:
       - ".:/application"
       # - "~/.aws/credentials:/root/.aws/credentials"

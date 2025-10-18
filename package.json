@@ -27,11 +27,13 @@
         "@rocketseat/eslint-config": "^2.2.2",
         "@types/node": "24.5.2",
         "eslint": "^8.57.1",
+        "pino": "^10.0.0",
+        "pino-loki": "^2.6.0",
         "prisma": "6.17.1",
+        "swagger-merger": "^1.5.4",
         "tsup": "8.5.0",
         "tsx": "4.20.5",
-        "typescript": "5.9.2",
-        "swagger-merger": "^1.5.4"
+        "typescript": "5.9.2"
     },
     "dependencies": {
         "@fastify/cors": "^10.0.0",
