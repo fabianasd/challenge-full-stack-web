@@ -1,11 +1,8 @@
 import type { FastifyRequest, FastifyReply } from 'fastify';
 import { z } from 'zod';
 import { makeUpdateUserUseCase } from '../../use-cases/factories/make-update-user-use-case';
-import {
-  EmailAlreadyInUseError,
-  NoEditableFieldsError,
-  ResourceNotFoundError,
-} from '../../use-cases/update-users';
+import { StudentError } from '../../shared/errors/students.error';
+import { ERROR_MESSAGES } from '../../shared/errors/error-messages';
 
 const bodySchema = z
   .object({
@@ -30,28 +27,27 @@ export async function updateUser(request: FastifyRequest, reply: FastifyReply) {
   };
 
   try {
-    const { user } = await makeUpdateUserUseCase().execute({ ra, ...updates });
-
-    const safeUser = {
-      personId: user.personId.toString(),
-      fullName: user.fullName,
-      email: user.email,
+    const updateStudentUseCase = makeUpdateUserUseCase(request)
+    const { data, error } = await updateStudentUseCase.execute({
       ra,
-    };
+      name: parsedBody.name,
+      email: parsedBody.email,
+    })
 
-    return reply.status(200).send(safeUser);
+    if (error) {
+      throw error;
+    }
+
+    return reply.status(200).send(data);
   } catch (err) {
-    if (err instanceof ResourceNotFoundError) {
-      return reply.status(404).send({ message: 'User not found' });
-    }
-    if (err instanceof EmailAlreadyInUseError) {
-      return reply.status(409).send({ message: 'Email already in use' });
-    }
-    if (err instanceof NoEditableFieldsError) {
+    if (err instanceof StudentError) {
       return reply
-        .status(400)
-        .send({ message: 'Provide at least one editable field' });
+        .status(err.statusCode || 500)
+        .send({ error: { type: err.errorType, message: err.message } });
     }
-    throw err;
+
+    return reply
+      .status(500)
+      .send({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
   }
 }

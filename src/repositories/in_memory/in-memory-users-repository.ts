@@ -83,10 +83,10 @@ export class InMemoryUsersRepository implements UsersRepository {
   }
 
   async updateEditable(
-    personId: bigint,
+    ra: string,
     data: { name?: string; email?: string },
-  ): Promise<Person> {
-    const index = this.records.findIndex((item) => item.personId === personId);
+  ): Promise<StudentEntity | null> {
+    const index = this.records.findIndex((item) => item.student.ra === ra);
     if (index < 0) {
       throw new Error('NOT_FOUND');
     }
@@ -98,7 +98,7 @@ export class InMemoryUsersRepository implements UsersRepository {
       data.email !== current.student.email &&
       this.records.some(
         (item) =>
-          item.student.email === data.email && item.personId !== personId,
+          item.student.email === data.email && item.student.ra !== ra,
       );
 
     if (isEmailTaken) {
@@ -119,7 +119,7 @@ export class InMemoryUsersRepository implements UsersRepository {
 
     this.records[index] = updatedRecord;
 
-    return this.toPerson(updatedRecord);
+    return null;
   }
 
   async deleteByRA(ra: string): Promise<number> {
