@@ -22,9 +22,10 @@ model Student {
   personId BigInt  @id @map("person_id") @db.BigInt
   person   Person  @relation(fields: [personId], references: [personId], onDelete: Cascade, onUpdate: Cascade)
 
-  ra       String  @db.VarChar(20)
+  ra       String  @unique @db.VarChar(20)
 
   @@index([personId])
+  @@index([ra])
 
   @@map("student")
 }

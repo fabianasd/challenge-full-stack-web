@@ -1,8 +1,9 @@
 import { Prisma } from '@prisma/client';
-import type { Person } from '@prisma/client';
 import { prisma } from '../../lib/prisma';
 import type { PersonWithStudent, UsersRepository } from '../users-repository';
 import { StudentEntity } from '../../entities/student';
+import { StudentError } from '../../shared/errors/students.error';
+import { ERROR_MESSAGES, ERROR_TYPE, HTTP_STATUS } from '../../shared/errors/error-messages';
 
 export class PrismaPersonRepository implements UsersRepository {
   async create(studentEntity: StudentEntity): Promise<StudentEntity | null> {
@@ -63,44 +64,33 @@ export class PrismaPersonRepository implements UsersRepository {
   }
 
   async updateEditable(
-    personId: bigint,
+    ra: string,
     data: { name?: string; email?: string },
-  ): Promise<Person> {
+  ): Promise<StudentEntity | null> {
     const updateData: Prisma.PersonUpdateInput = {};
-    if (data.name !== undefined) {
+    if (data.name !== '') {
       updateData.fullName = data.name;
     }
-    if (data.email !== undefined) {
+    if (data.email !== '') {
       updateData.email = data.email;
     }
 
-    try {
-      return await prisma.person.update({
-        where: { personId },
-        data: updateData,
-      });
-    } catch (err: unknown) {
-      if (err instanceof Prisma.PrismaClientKnownRequestError) {
-        if (err.code === 'P2025') {
-          throw new Error('NOT_FOUND');
-        }
-        if (err.code === 'P2002') {
-          const target = err.meta?.target;
-          const targets = Array.isArray(target)
-            ? target
-            : target
-              ? [target]
-              : [];
-          if (
-            targets.includes('email') ||
-            targets.includes('person_email_key')
-          ) {
-            throw new Error('EMAIL_TAKEN');
-          }
-        }
-      }
-      throw err;
+    const student = await prisma.student.findFirst({
+      where: { ra },
+      select: { personId: true },
+    });
+
+    if (!student) {
+      throw new StudentError(ERROR_MESSAGES.STUDENT_NOT_FOUND, ERROR_TYPE.STUDENT_NOT_FOUND, HTTP_STATUS.NOT_FOUND);
     }
+
+    const updatedPerson = await prisma.person.update({
+      where: { personId: student.personId },
+      data: updateData,
+      include: { student: true },
+    });
+
+    return this.toEntity(updatedPerson);
   }
 
   async deleteByRA(ra: string): Promise<number> {

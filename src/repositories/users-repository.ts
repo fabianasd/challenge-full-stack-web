@@ -13,8 +13,8 @@ export interface UsersRepository {
   listAll(): Promise<PersonWithStudent[]>;
   findByRA(ra: string): Promise<StudentWithPerson | null>;
   updateEditable(
-    personId: bigint,
+    ra: string,
     data: { name?: string; email?: string },
-  ): Promise<Person>;
+  ): Promise<StudentEntity | null>;
   deleteByRA(ra: string): Promise<number>;
 }
