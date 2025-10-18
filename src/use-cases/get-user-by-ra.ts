@@ -1,23 +1,25 @@
-import type { UsersRepository } from '../repositories/users-repository'
+import type { UsersRepository } from '../repositories/users-repository';
 
 export class ResourceNotFoundError extends Error {
-  constructor() { super('Resource not found') }
+  constructor() {
+    super('Resource not found');
+  }
 }
 
 interface GetUserByRARequest {
-  ra: string
+  ra: string;
 }
 
 export class GetUserByRAUseCase {
   constructor(private studentRepository: UsersRepository) {}
 
   async execute({ ra }: GetUserByRARequest) {
-    const user = await this.studentRepository.findByRA(ra)
+    const user = await this.studentRepository.findByRA(ra);
 
     if (!user) {
-      throw new ResourceNotFoundError()
+      throw new ResourceNotFoundError();
     }
 
-    return { user }
+    return { user };
   }
 }

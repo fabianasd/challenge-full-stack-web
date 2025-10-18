@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgresql://docker:docker@postgres-db:5432/app?schema=public"
 }
 
 model Person {

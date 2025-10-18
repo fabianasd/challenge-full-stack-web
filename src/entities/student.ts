@@ -10,6 +10,6 @@ export class StudentEntity {
     public readonly name: string,
     public readonly email: string,
     public readonly document: string,
-    public readonly ra: string
+    public readonly ra: string,
   ) {}
 }
