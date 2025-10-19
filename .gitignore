@@ -2,6 +2,8 @@
 der_students.vpp.*
 node_modules
 build
+dist
+coverage
 .env
 /generate/prisma
 migration_lock.toml

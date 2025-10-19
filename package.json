@@ -8,6 +8,8 @@
         "start:dev": "tsx watch src/server.ts",
         "start": "node build/server.js",
         "build": "tsup src --out-dir build",
+        "test": "tsx --test \"tests/**/*.test.ts\"",
+        "coverage": "c8 --reporter=text --reporter=lcov tsx --test \"tests/**/*.test.ts\"",
         "lint": "eslint src --ext .ts,.tsx --max-warnings=0",
         "lint:fix": "eslint src --ext .ts,.tsx --fix",
         "swagger-merger": "node_modules/swagger-merger/bin/swagger-merger.js -i docs/OpenAPI/index.yml -o docs/OpenAPI/swagger-api.yml"
@@ -33,7 +35,8 @@
         "swagger-merger": "^1.5.4",
         "tsup": "8.5.0",
         "tsx": "4.20.5",
-        "typescript": "5.9.2"
+        "typescript": "5.9.2",
+        "c8": "^10.1.2"
     },
     "dependencies": {
         "@fastify/cors": "^10.0.0",
