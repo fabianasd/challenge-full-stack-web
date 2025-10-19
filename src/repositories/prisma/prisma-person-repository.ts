@@ -3,7 +3,11 @@ import { prisma } from '../../lib/prisma';
 import type { PersonWithStudent, UsersRepository } from '../users-repository';
 import { StudentEntity } from '../../entities/student';
 import { StudentError } from '../../shared/errors/students.error';
-import { ERROR_MESSAGES, ERROR_TYPE, HTTP_STATUS } from '../../shared/errors/error-messages';
+import {
+  ERROR_MESSAGES,
+  ERROR_TYPE,
+  HTTP_STATUS,
+} from '../../shared/errors/error-messages';
 
 export class PrismaPersonRepository implements UsersRepository {
   async create(studentEntity: StudentEntity): Promise<StudentEntity | null> {
@@ -81,7 +85,11 @@ export class PrismaPersonRepository implements UsersRepository {
     });
 
     if (!student) {
-      throw new StudentError(ERROR_MESSAGES.STUDENT_NOT_FOUND, ERROR_TYPE.STUDENT_NOT_FOUND, HTTP_STATUS.NOT_FOUND);
+      throw new StudentError(
+        ERROR_MESSAGES.STUDENT_NOT_FOUND,
+        ERROR_TYPE.STUDENT_NOT_FOUND,
+        HTTP_STATUS.NOT_FOUND,
+      );
     }
 
     const updatedPerson = await prisma.person.update({
