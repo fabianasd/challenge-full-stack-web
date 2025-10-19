@@ -10,6 +10,6 @@ export function makeUpdateUserUseCase(request: FastifyRequest) {
   const gateway = new UpdateStudentGateway(
     prismaPersonRepository,
     lokiLoggerService,
-  )
+  );
   return new UpdateUserUseCase(gateway);
 }

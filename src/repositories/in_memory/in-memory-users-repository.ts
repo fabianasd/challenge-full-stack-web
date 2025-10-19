@@ -97,8 +97,7 @@ export class InMemoryUsersRepository implements UsersRepository {
       data.email !== undefined &&
       data.email !== current.student.email &&
       this.records.some(
-        (item) =>
-          item.student.email === data.email && item.student.ra !== ra,
+        (item) => item.student.email === data.email && item.student.ra !== ra,
       );
 
     if (isEmailTaken) {

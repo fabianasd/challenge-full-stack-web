@@ -21,18 +21,13 @@ export async function updateUser(request: FastifyRequest, reply: FastifyReply) {
   const { ra } = paramsSchema.parse(request.params);
   const parsedBody = bodySchema.parse(request.body);
 
-  const updates: { name?: string; email?: string } = {
-    ...(parsedBody.name !== undefined ? { name: parsedBody.name } : {}),
-    ...(parsedBody.email !== undefined ? { email: parsedBody.email } : {}),
-  };
-
   try {
-    const updateStudentUseCase = makeUpdateUserUseCase(request)
+    const updateStudentUseCase = makeUpdateUserUseCase(request);
     const { data, error } = await updateStudentUseCase.execute({
       ra,
       name: parsedBody.name,
       email: parsedBody.email,
-    })
+    });
 
     if (error) {
       throw error;

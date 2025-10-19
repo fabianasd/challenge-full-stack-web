@@ -1,7 +1,7 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { z } from 'zod';
 import { makeDeleteUserByRAUseCase } from '../../use-cases/factories/make-delete-user-by-ra-use-case';
-import { ResourceNotFoundError } from '../../use-cases/get-user-by-ra';
+import { StudentError } from '../../shared/errors/students.error';
 
 const paramsSchema = z.object({
   ra: z.string().trim().min(1, 'RA é obrigatório'),
@@ -18,7 +18,7 @@ export async function deleteUserByRA(
     await delUser.execute({ ra });
     return reply.status(204).send();
   } catch (err) {
-    if (err instanceof ResourceNotFoundError) {
+    if (err instanceof StudentError) {
       return reply.status(404).send({ message: err.message });
     }
     throw err;

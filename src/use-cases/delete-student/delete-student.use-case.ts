@@ -29,7 +29,7 @@ export class DeleteUserByRAUseCase {
     } catch (err) {
       this.deleteStudentGateway.addLog(
         LogType.Error,
-        'Error when registering a new student',
+        'Error when delete student',
         { err, milliseconds: Date.now() - startDate },
       );
       throw err;

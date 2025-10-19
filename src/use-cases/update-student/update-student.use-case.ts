@@ -1,5 +1,9 @@
 import { StudentEntity } from '../../entities/student';
-import { ERROR_MESSAGES, ERROR_TYPE, HTTP_STATUS } from '../../shared/errors/error-messages';
+import {
+  ERROR_MESSAGES,
+  ERROR_TYPE,
+  HTTP_STATUS,
+} from '../../shared/errors/error-messages';
 import { StudentError } from '../../shared/errors/students.error';
 import { UpdateStudentInput, UpdateStudentOutput } from './update-student.dto';
 import { UpdateStudentGateway } from './update-student.gateway';
@@ -20,13 +24,14 @@ export class UpdateUserUseCase {
       studentEntity = new StudentEntity(name || '', email || '', '', ra);
       studentEntity = await this.updateStudentGateway.updateByRa(studentEntity);
       if (!studentEntity) {
-        throw new StudentError(ERROR_MESSAGES.STUDENT_NOT_FOUND,
+        throw new StudentError(
+          ERROR_MESSAGES.STUDENT_NOT_FOUND,
           ERROR_TYPE.STUDENT_NOT_FOUND,
           HTTP_STATUS.NOT_FOUND,
-        )
+        );
       }
       return { data: studentEntity };
- } catch (err) {
+    } catch (err) {
       this.updateStudentGateway.addLog(
         LogType.Error,
         'Error when update a student',
