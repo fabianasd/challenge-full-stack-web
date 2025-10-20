@@ -2,22 +2,22 @@
 
 
 build:
-	docker-compose build
+	docker compose build
 
 down:
-	docker-compose down api
+	docker compose down api
 
 setup:
-	docker network create shared-services 2>/dev/null & docker-compose run -w /application api /bin/bash -c "npm install && npx prisma generate && npx prisma migrate dev"
+	docker network create shared-services 2>/dev/null & docker compose run -w /application api /bin/bash -c "npm install && npx prisma generate && npx prisma migrate dev"
 
 swagger:
-	docker-compose run -w /application api /bin/bash -c "npm install && npm run swagger-merger"
+	docker compose run -w /application api /bin/bash -c "npm install && npm run swagger-merger"
 
 debug: down
-	WATCH_FILES=1 DEBUG=1 docker-compose up -d
+	WATCH_FILES=1 DEBUG=1 docker compose up -d
 
 login:
-	docker-compose run -w /application api /bin/bash
+	docker compose run -w /application api /bin/bash
 
 logs: 
 	docker compose logs api --tail=10 -f

@@ -5,11 +5,11 @@ info:
   contact:
     name: Fabiana
     email: fabypetrovick@gmail.com
-    url: https://amais.fabiana.petrovick.work
+    url: https://amais-api.fabiana.petrovick.work
   description: Documentação para Gestão de Alunos
 
 servers:
-  - url: "https://amais.fabiana.petrovick.work"
+  - url: "https://amais-api.fabiana.petrovick.work"
     description: Produção
 
 paths:
