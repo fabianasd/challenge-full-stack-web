@@ -1,0 +1,83 @@
+tags:
+  - Students
+summary: Registro de Aluno
+description: >-
+  Neste endpoint é possível que universidade faça o cadastro do aluno.
+
+  Algumas informações são obrigatórias como Nome, Email e Registro Acadêmico.
+operationId: atualizarAluno
+parameters:
+  - name: ra
+    in: path
+    required: true
+    schema:
+      type: number
+      example: 123456
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        required: [name, email]
+        properties:
+          name:
+            type: string
+            maximum: 255
+            example: "João da Silva Mota"
+            description: Nome completo do Aluno
+          email:
+            type: string
+            maximum: 255
+            example: meu_email@gmail.com
+            description: E-mail fornecido pelo aluno no momento do cadastro
+      examples:
+        Atualizar Aluno:
+          value:
+            name: "João da Silva "
+            email: "joao@email.com"
+responses:
+  "200":
+    description: "200"
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [data]
+          properties:
+            data:
+              $ref: "./../common/student.yml"
+        examples:
+          "200":
+            value:
+              data:
+                name: "João da Silva "
+                email: "joao@email.com"
+                cpf: "02434537014"
+                ra: "123456789"
+
+  "500":
+    description: Internal Server Error
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [error]
+          properties:
+            error:
+              type: object
+              required: [type, message]
+              properties:
+                type:
+                  type: string
+                  example: internal_server_error
+                  description: Erro interno do servidor
+                message:
+                  type: string
+                  example: Internal server error
+                  description: Erro interno no servidor
+        examples:
+          "500":
+            value:
+              error:
+                type: internal_server_error
+                message: Internal server error

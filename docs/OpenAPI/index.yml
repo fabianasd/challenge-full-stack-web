@@ -13,8 +13,7 @@ servers:
     description: Produção
 
 paths:
-  # Students
-  /students:
+  /users:
     post:
       tags:
         - Students
@@ -23,3 +22,16 @@ paths:
       tags:
         - Students
       $ref: "./students/list-students.yml"
+  /users/{ra}:
+    get:
+      tags:
+        - Students
+      $ref: "./students/list-student-by-ra.yml"
+    put:
+      tags:
+        - Students
+      $ref: "./students/update-student-by-ra.yml"
+    delete:
+      tags:
+        - Students
+      $ref: "./students/delete-student-by-ra.yml"

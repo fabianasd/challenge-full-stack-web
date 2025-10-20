@@ -1,0 +1,45 @@
+tags:
+  - Students
+summary: Registro de Aluno
+description: >-
+  Neste endpoint é possível que universidade faça o cadastro do aluno.
+
+  Algumas informações são obrigatórias como Nome, Email e Registro Acadêmico.
+operationId: excluirAluno
+parameters:
+  - name: ra
+    in: path
+    required: true
+    schema:
+      type: number
+      example: 123456
+responses:
+  "204":
+    description: "204"
+
+  "500":
+    description: Internal Server Error
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [error]
+          properties:
+            error:
+              type: object
+              required: [type, message]
+              properties:
+                type:
+                  type: string
+                  example: internal_server_error
+                  description: Erro interno do servidor
+                message:
+                  type: string
+                  example: Internal server error
+                  description: Erro interno no servidor
+        examples:
+          "500":
+            value:
+              error:
+                type: internal_server_error
+                message: Internal server error
