@@ -1,0 +1,62 @@
+tags:
+  - Students
+summary: Buscar aluno por Registro Acadêmico
+description: >-
+  Neste endpoint é possível buscar um aluno através de sua matrícula.
+
+  Algumas informações são fornecidas como Nome, Email, CPF e Registro Acadêmico.
+operationId: buscarAluno
+parameters:
+  - name: ra
+    in: path
+    required: true
+    schema:
+      type: number
+      example: 123456
+responses:
+
+  "200":
+    description: "200"
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [data]
+          properties:
+            data:
+              $ref: "./../common/student.yml"
+        examples:
+          "200":
+            value:
+              data: 
+                name: "João da Silva "
+                email: "joao@email.com"
+                cpf: "02434537014"
+                ra: "123456789"
+
+  "500":
+    description: Internal Server Error
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [error]
+          properties:
+            error:
+              type: object
+              required: [type, message]
+              properties:
+                type:
+                  type: string
+                  example: internal_server_error
+                  description: Erro interno do servidor
+                message:
+                  type: string
+                  example: Internal server error
+                  description: Erro interno no servidor
+        examples:
+          "500":
+            value:
+              error:
+                type: internal_server_error
+                message: Internal server error
