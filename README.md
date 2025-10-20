@@ -45,18 +45,18 @@ O sistema segue uma arquitetura centrada em uma API HTTP Fastify que orquestra a
 
 ![Requests por minuto](docs/Observability-Rastreability/request_per_second.png)
 
-Gráfico de throughput que consolida os logs do Loki para mostrar requisições por minuto (RPM). As variações e picos apontam períodos de burst em importações de dados ou cenários de stress, ajudando a entender quando a API foi mais exigida.
+Gráfico de throughput que consolida os logs do Loki para mostrar requisições por minuto (RPM). Os picos e quedas identificam rapidamente quando houve rajadas de chamadas, por exemplo, durante importações em lote deixando claro em que momentos a API operou sob maior carga.
 
 ![Erros por minuto](docs/Observability-Rastreability/errors_per_second.png)
 
-Visualização focada em eventos `level=error`, exibindo quantos erros surgiram a cada minuto. Útil para correlacionar quedas de RPM com causas reais e sinalizar janelas em que o comportamento da API degradou.
+Visualização focada em eventos de erro, exibindo quantidade de erros que surgiram a cada minuto. Útil para correlacionar quedas de RPM com causas reais e sinalizar janelas em que o comportamento da API degradou.
 
 ![Requests vs erros (últimos 5m)](docs/Observability-Rastreability/qtd_requests_erros.png)
 
-Painel resumo com contadores dos últimos cinco minutos, permitindo acompanhar rapidamente o volume total de requisições e quantas falharam no mesmo intervalo. Ideal para war rooms ou monitoramento em tempo real.
+Painel resumo com contadores dos últimos cinco minutos, permitindo acompanhar rapidamente o volume total de requisições e quantas falharam no mesmo intervalo. 
 
 ![Top mensagens de erro](docs/Observability-Rastreability/top_mensagens_erro.png)
 
-Tabela que ranqueia as mensagens de erro mais recorrentes nos últimos cinco minutos. No exemplo, a falha ao registrar novos alunos aparece várias vezes, indicando exatamente qual feature merece atenção prioritária da equipe.
+Tabela que ranqueia as mensagens de erro mais recorrentes. No exemplo, a falha ao registrar novos alunos aparece várias vezes, indicando exatamente qual feature merece atenção prioritária da equipe.
 
 > Nota: não foram realizados testes de carga até o momento. Esses dashboards e os logs estruturados que os alimentam são a base para acompanhar throughput, taxa de erros e principais mensagens, acelerando a análise quando exercícios de carga forem executados.
