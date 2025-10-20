@@ -14,19 +14,19 @@ const cpfSchema = z
 
 export async function register(request: FastifyRequest, reply: FastifyReply) {
   const registerBodySchema = z.object({
-    name: z.string().max(255),
+    fullName: z.string().max(255),
     email: z.string().max(255).email(),
     cpf: cpfSchema,
     ra: z.string().trim().min(1, 'RA é obrigatório'),
   });
 
-  const { name, email, cpf, ra } = registerBodySchema.parse(request.body);
+  const { fullName, email, cpf, ra } = registerBodySchema.parse(request.body);
 
   try {
     const registerUseCase = makeRegisterStudentsUseCase(request);
 
     const student = await registerUseCase.execute({
-      name,
+      name: fullName,
       email,
       cpf,
       ra,
