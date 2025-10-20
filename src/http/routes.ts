@@ -6,9 +6,9 @@ import { updateUser } from './controllers/update';
 import { deleteUserByRA } from './controllers/delete-user-by-ra';
 
 export async function usersRoutes(app: FastifyInstance) {
-  app.post('/users', register);
-  app.get('/users', listStudents);
-  app.get('/users/:ra', listStudentUserByRA);
-  app.put('/users/:ra', updateUser);
-  app.delete('/users/:ra', deleteUserByRA);
+  app.post('/students', register);
+  app.get('/students', listStudents);
+  app.get('/students/:ra', listStudentUserByRA);
+  app.put('/students/:ra', updateUser);
+  app.delete('/students/:ra', deleteUserByRA);
 }

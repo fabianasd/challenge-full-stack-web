@@ -11,7 +11,7 @@ servers:
   - url: https://amais.fabiana.petrovick.work
     description: Produção
 paths:
-  /users:
+  /students:
     post:
       tags:
         - Students
@@ -274,7 +274,7 @@ paths:
                     error:
                       type: internal_server_error
                       message: Internal server error
-  /users/{ra}:
+  /students/{ra}:
     get:
       tags:
         - Students
