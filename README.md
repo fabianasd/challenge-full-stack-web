@@ -43,20 +43,20 @@ O sistema segue uma arquitetura centrada em uma API HTTP Fastify que orquestra a
 
 ## Observabilidade e Rastreabilidade
 
-![Dashboard de latência e erros](docs/Observability-Rastreability/dashboard.png)
+![Requests por minuto](docs/Observability-Rastreability/request_per_second.png)
 
-Painel Loki + Grafana com p99, p50 e média de latência, além do volume de requisições por minuto. Ajuda a identificar regressões de desempenho e picos de tráfego.
+Gráfico de throughput que consolida os logs do Loki para mostrar requisições por minuto (RPM). As variações e picos apontam períodos de burst em importações de dados ou cenários de stress, ajudando a entender quando a API foi mais exigida.
 
-![Dashboard em período estável](docs/Observability-Rastreability/dashboard_2.png)
+![Erros por minuto](docs/Observability-Rastreability/errors_per_second.png)
 
-Mesmo painel em janela mais estável, evidenciando a linha de base de latência da API e o throughput sustentado.
+Visualização focada em eventos `level=error`, exibindo quantos erros surgiram a cada minuto. Útil para correlacionar quedas de RPM com causas reais e sinalizar janelas em que o comportamento da API degradou.
 
-![Consulta filtrada por requestId](docs/Observability-Rastreability/requestIdRastrability.png)
+![Requests vs erros (últimos 5m)](docs/Observability-Rastreability/qtd_requests_erros.png)
 
-Pesquisa de logs estruturados no Loki usando `requestId` para rastrear ponta a ponta uma requisição específica, inspecionando tempos, payloads e mensagens correlatas.
+Painel resumo com contadores dos últimos cinco minutos, permitindo acompanhar rapidamente o volume total de requisições e quantas falharam no mesmo intervalo. Ideal para war rooms ou monitoramento em tempo real.
 
-![Amostra de logs estruturados](docs/Observability-Rastreability/sample_logs.png)
+![Top mensagens de erro](docs/Observability-Rastreability/top_mensagens_erro.png)
 
-Exemplo de logs JSON enviados pelo Pino e agregados pelo Loki, com histograma de volume e mensagens destacando eventos de sucesso para análise exploratória.
+Tabela que ranqueia as mensagens de erro mais recorrentes nos últimos cinco minutos. No exemplo, a falha ao registrar novos alunos aparece várias vezes, indicando exatamente qual feature merece atenção prioritária da equipe.
 
-> Nota: Os dashboards e logs estruturados descritos acima servem como ponto de partida para monitorar throughput e detectar gargalos quando esses testes forem executados.
+> Nota: não foram realizados testes de carga até o momento. Esses dashboards e os logs estruturados que os alimentam são a base para acompanhar throughput, taxa de erros e principais mensagens, acelerando a análise quando exercícios de carga forem executados.
