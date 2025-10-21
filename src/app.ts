@@ -2,7 +2,7 @@ import fastify from 'fastify';
 import { randomUUID } from 'node:crypto';
 import { baseLogger, createRequestLogger } from './logger';
 import cors from '@fastify/cors';
-import { usersRoutes } from './http/routes';
+import { authRoutes, usersRoutes } from './http/routes';
 import { ZodError } from 'zod';
 import { env } from './env/index';
 
@@ -30,6 +30,7 @@ app.addHook('onRequest', (req, _reply, done) => {
   done();
 });
 
+app.register(authRoutes);
 app.register(usersRoutes);
 
 app.setErrorHandler((error, request, reply) => {

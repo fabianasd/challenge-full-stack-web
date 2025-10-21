@@ -34,6 +34,8 @@ services:
       - WATCH_FILES=${WATCH_FILES}
       - DATABASE_URL=postgresql://docker:docker@postgres-db:5432/app?schema=public
       - LOKI_URL=http://loki:3100
+      - JWT_SECRET=dev-super-secret-jwt-key-please-change-123456
+      - JWT_EXPIRES_IN=15m
     volumes:
       - ".:/application"
     networks:
