@@ -12,5 +12,5 @@ export async function listStudents(
     return reply.status(error.statusCode || 500).send(error);
   }
 
-  return reply.status(200).send(data);
+  return reply.status(200).send({data});
 }

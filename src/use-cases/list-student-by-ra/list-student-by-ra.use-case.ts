@@ -27,13 +27,14 @@ export class ListStudentByRAUseCase {
         );
       }
 
-      return { student };
+      return { data: student };
     } catch (err) {
       this.listStudentByRAGateway.addLog(
         LogType.Error,
         'Error when list student',
         { err, milliseconds: Date.now() - startDate },
       );
+      
       throw err;
     }
   }

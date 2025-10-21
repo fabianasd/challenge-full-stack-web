@@ -3,7 +3,13 @@
 API responsável por cadastrar e gerenciar alunos de uma instituição EdTech.
 Stack principal: Node.js + TypeScript + Fastify + Prisma + PostgreSQL, com observabilidade via Pino → Loki e documentação OpenAPI/Swagger.
 
-Demo da documentação (Swagger UI): http://docs-api.amais.fabiana.petrovick.work/
+### Links Úteis
+- Sistema Web (Vue.JS): http://amais.fabiana.petrovick.work
+- API do Sistem Web(Node.JS): http://amais-api.fabiana.petrovick.work
+- Documentação (Swagger UI): http://docs-api.amais.fabiana.petrovick.work/
+- Link do Grafana (Logs): http://grafana.amais.fabiana.petrovick.work/ 
+    - Usuário: admin e Senha: 12345678 
+    - Link [Dashboard](http://grafana.amais.fabiana.petrovick.work/d/loki-students-full-5/dashboard-alunos)
 
 ## Requisitos
 

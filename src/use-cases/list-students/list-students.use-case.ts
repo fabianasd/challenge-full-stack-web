@@ -17,6 +17,7 @@ export class ListStudentsUseCase {
         'Student listed sucessfully',
         { milliseconds: Date.now() - startDate },
       );
+      
       return {
         data: students,
       };
