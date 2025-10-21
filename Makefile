@@ -19,6 +19,9 @@ debug: down
 login:
 	docker compose run -w /application api /bin/bash
 
+seed:
+	docker compose run -w /application --rm api npx prisma db seed
+
 logs: 
 	docker compose logs api --tail=10 -f
 
