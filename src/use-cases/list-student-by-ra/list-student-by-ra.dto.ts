@@ -1,9 +1,9 @@
-import { StudentWithPerson } from '../../repositories/users-repository';
+import { StudentEntity } from '../../entities/student';
 
 export type ListStudentByRAInput = {
     ra: string;
 };
 
 export type ListStudentByRAOutput = {
-    student: StudentWithPerson;
+    data: StudentEntity;
 };

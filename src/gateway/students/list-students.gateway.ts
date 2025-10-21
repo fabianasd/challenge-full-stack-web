@@ -15,18 +15,7 @@ export class ListStudentsGateway
     super(lokiLoggerService);
   }
 
-  async listAllStudents(): Promise<StudentEntity[]> {
-    const users = await this.usersRepository.listAll();
-    const students: StudentEntity[] = users.map(
-      (user) =>
-        new StudentEntity(
-          user.fullName,
-          user.email,
-          user.document,
-          user.student?.ra || '',
-        ),
-    );
-
-    return students;
+  public async listAllStudents(): Promise<StudentEntity[]> {
+    return await this.usersRepository.listAll() as StudentEntity[];
   }
 }

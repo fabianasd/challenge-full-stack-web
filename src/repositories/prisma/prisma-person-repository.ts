@@ -52,19 +52,35 @@ export class PrismaPersonRepository implements UsersRepository {
     return this.toEntity(person);
   }
 
-  async listAll(): Promise<PersonWithStudent[]> {
-    const users = await prisma.person.findMany({
+  async listAll(): Promise<StudentEntity[] | null> {
+    const persons = await prisma.person.findMany({
+      where: {
+        student: {
+          isNot: null,
+        },
+      },
       orderBy: { personId: 'asc' },
       include: { student: true },
     });
-    return users;
+
+    if (!persons) {
+      return null;
+    }
+
+    return persons?.map(this.toEntity) as StudentEntity[];
   }
 
-  async findByRA(ra: string) {
-    return prisma.student.findFirst({
-      where: { ra },
-      include: { person: true },
+  async findByRA(ra: string): Promise<StudentEntity> {
+    const person = await prisma.person.findFirst({
+      where: { 
+        student: {
+          ra
+        }
+       },
+      include: { student: true },
     });
+
+    return this.toEntity(person as PersonWithStudent) as StudentEntity;
   }
 
   async updateEditable(
