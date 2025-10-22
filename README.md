@@ -9,7 +9,7 @@ Stack principal: Node.js + TypeScript + Fastify + Prisma + PostgreSQL, com obser
 - Documentação (Swagger UI): [http://docs-api.amais.fabiana.petrovick.work](https://docs-api-amais-fabiana.petrovick.work)
 - Link do Grafana (Logs): [http://grafana.amais.fabiana.petrovick.work](https://grafana-amais-fabiana.petrovick.work/d/loki-students-full/dashboard-alunos?orgId=1&refresh=10s)
     - Usuário: admin e Senha: 12345678 
-    - Link [Dashboard](http://grafana.amais.fabiana.petrovick.work/d/loki-students-full-5/dashboard-alunos)
+    - Link [Dashboard](https://grafana-amais-fabiana.petrovick.work/d/loki-students-full/dashboard-alunos?orgId=1&refresh=10s)
 
 ## Requisitos
 
